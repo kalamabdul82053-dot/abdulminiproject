@@ -1,0 +1,75 @@
+<body>
+
+  <h1>Complaint Management System</h1>
+  <div class="container">
+    <h3>Register Complaint</h3>
+    <input type="text" id="name" placeholder="Enter your name" required>
+    <textarea id="complaint" rows="3" placeholder="Enter your complaint" required></textarea>
+    <button onclick="addComplaint()">Submit Complaint</button>
+
+    <h3>All Complaints</h3>
+    <div id="complaintsList"></div>
+  </div>
+
+  <script>
+    let complaints = [];
+    let complaintId = 1;
+
+    function addComplaint() {
+      let name = document.getElementById("name").value.trim();
+      let complaintText = document.getElementById("complaint").value.trim();
+
+      if (name === "" || complaintText === "") {
+        alert("Please enter all details!");
+        return;
+      }
+
+      let complaint = {
+        id: complaintId,
+        name: name,
+        text: complaintText,
+        status: "Pending"
+      };
+
+      complaints.push(complaint);
+      complaintId++;
+
+      document.getElementById("name").value = "";
+      document.getElementById("complaint").value = "";
+
+      displayComplaints();
+    }
+
+    function resolveComplaint(id) {
+      complaints = complaints.map(c => {
+        if (c.id === id) c.status = "Resolved";
+        return c;
+      });
+      displayComplaints();
+    }
+
+    function displayComplaints() {
+      let list = document.getElementById("complaintsList");
+      list.innerHTML = "";
+
+      complaints.forEach(c => {
+        let div = document.createElement("div");
+        div.className = "complaint";
+        div.innerHTML = `
+          <p><strong>ID:</strong> ${c.id}</p>
+          <p><strong>Name:</strong> ${c.name}</p>
+          <p><strong>Complaint:</strong> ${c.text}</p>
+          <p class="status ${c.status === 'Resolved' ? 'resolved' : ''}">
+            Status: ${c.status}
+          </p>
+          ${c.status === "Pending" ? 
+            <button onclick="resolveComplaint(${c.id})">Mark as Resolved</button> 
+            : ""}
+        `;
+        list.appendChild(div);
+      });
+    }
+  </script>
+
+</body>
+</html>>
